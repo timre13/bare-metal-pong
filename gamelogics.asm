@@ -48,40 +48,81 @@ move_ball:
 ;***********************************************;
 handle_ball_bouncing_from_edges:
     push bx
+    push di
+    push si
     
-    mov ax, [ball_x]
-    mov bx, [ball_y]
+    mov ax, [ball_x]                ; AX = ball X
+    mov bx, [ball_y]                ; BX = ball Y
+    mov di, [player_1_y]            ; DI = player 1 Y
+    mov si, [player_2_y]            ; SI = player 2 Y
 
-    cmp ax, BALL_SPEED-1
-    jle .ball_touches_x_edge
-    cmp ax, SCREEN_W-BALL_SIZE-1
-    jge .ball_touches_x_edge
-    jmp .test_ball_x_end
+.test_ball_x:
+    cmp ax, BALL_SPEED-1            ; If the ball touches the left side
+    jle .ball_touches_left_side     ; Handle it
+    cmp ax, SCREEN_W-BALL_SIZE-1    ; If the ball touches the right side
+    jge .ball_touches_right_side    ; Handle it
+    jmp .test_ball_y                ; The ball does not touch X side
 
-.ball_touches_x_edge:
-    cmp byte [is_ball_x_speed_positive], FALSE
-    je .player_2_scored
-.player_1_scored:
+.ball_touches_right_side:
+    ; if (ball_y + ball_size < player_2_y ||
+    ;     ball_y > player_2_y + player_height)
+    ;   player_1_score();
+
+    mov cx, bx
+    add cx, BALL_SIZE
+    cmp cx, si
+    jl .player_1_score              ; Player 1 scores
+
+    mov cx, si
+    add cx, PLAYER_HEIGHT
+    cmp bx, cx
+    jg .player_1_score              ; Player 1 scores
+
+    jmp .ball_touches_x_edge_end
+
+.player_1_score:
     inc byte [player_1_score]
     jmp .ball_touches_x_edge_end
-.player_2_scored:
-    inc byte [player_2_score]
-.ball_touches_x_edge_end:
-    xor byte [is_ball_x_speed_positive], 1
 
-.test_ball_x_end:
-    ; Test ball Y
-    cmp bx, BALL_SPEED-1
+
+.ball_touches_left_side:
+    ; if (ball_y + ball_size < player_1_y ||
+    ;     ball_y > player_1_y + player_height)
+    ;   player_2_score();
+
+    mov cx, bx
+    add cx, BALL_SIZE
+    cmp cx, di
+    jl .player_2_score              ; Player 2 scores
+
+    mov cx, di
+    add cx, PLAYER_HEIGHT
+    cmp bx, cx
+    jg .player_2_score              ; Player 2 scores
+
+    jmp .ball_touches_x_edge_end
+
+.player_2_score:
+    inc byte [player_2_score]
+    jmp .ball_touches_x_edge_end
+
+.ball_touches_x_edge_end:
+    xor byte [is_ball_x_speed_positive], 1  ; Bounce the ball
+
+
+.test_ball_y:
+    cmp bx, BALL_SPEED-1            ; If the ball touches the top
     jle .ball_touches_y_edge
     cmp bx, SCREEN_H-BALL_SIZE-1
-    jge .ball_touches_y_edge
-    jmp .test_ball_y_end
+    jge .ball_touches_y_edge        ; If the ball touches the bottom
+    jmp .end
 
 .ball_touches_y_edge:
-    xor byte [is_ball_y_speed_positive], 1
+    xor byte [is_ball_y_speed_positive], 1  ; Bounce the ball
 
-.test_ball_y_end:
-
+.end:
+    pop si
+    pop di
     pop bx
     ret
 
