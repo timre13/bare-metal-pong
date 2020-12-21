@@ -1,0 +1,5 @@
+Encode to QR Code:
+base64 pong.img | qrencode -o qr.png
+
+Decode to binary file:
+zbarimg qr.png --raw --quiet | base64 --decode > out.img

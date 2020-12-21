@@ -1,0 +1,12 @@
+init stuff
+`divider` = 10
+`digit-index` = 0
+Loop:
+    `digit-index` = mod `input` and `divider`
+    `output`[4-`digit-index`] = `digit`
+    inc `digit`
+    `divider` *= 10
+    if `digit-index` < 5:
+        jump to `Loop`
+    else:
+        return output
