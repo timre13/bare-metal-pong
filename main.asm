@@ -191,6 +191,7 @@ print_string:
 ;***********************************************;
 ; Read the non-first partitons to the memory.
 ;***********************************************;
+; FIXME: This function fails with error code 0x02 on real hardware. Why?
 read_disk:
     push bx
     push di
