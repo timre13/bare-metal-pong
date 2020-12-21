@@ -101,7 +101,7 @@ entry:
 ;----- Handle player 2 movement -------
 
     call get_random8
-    cmp ax, 120                     ; Higher value = better bot
+    cmp ax, 150                     ; Higher value = better bot
     jge .player_2_move_end
 
     mov ax, [ball_y]
