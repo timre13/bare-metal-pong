@@ -271,6 +271,7 @@ draw_player:
 
 ;***********************************************;
 ; Show game over screen.
+; Print a message depending on the winner.
 ;***********************************************;
 show_game_over_screen:
     push es
@@ -289,7 +290,7 @@ show_game_over_screen:
     cmp esi, 12
     jge .print_text
     mov edi, esi
-    
+
     mov eax, 100000
     call wait_for_microsecs
     
@@ -306,7 +307,7 @@ show_game_over_screen:
     ; Set cursor position
     mov ah, 0x02
     xor bh, bh                  ; Page
-    mov dh, SCREEN_H_CHARS/2    ; Row
+    mov dh, SCREEN_H_CHARS/2-1  ; Row
     mov dl, SCREEN_W_CHARS/2-4  ; Col
     int 0x10
 
@@ -316,11 +317,42 @@ show_game_over_screen:
     ; Set cursor position, skip space
     mov ah, 0x02
     xor bh, bh                  ; Page
-    mov dh, SCREEN_H_CHARS/2    ; Row
+    mov dh, SCREEN_H_CHARS/2-1  ; Row
     mov dl, SCREEN_W_CHARS/2+1  ; Col
     int 0x10
-    
+
     mov eax, .game_over_msg2
+    call print_string
+
+    mov byte al, [player_1_score]
+    mov byte ah, [player_2_score]
+    cmp al, ah
+    jg .player_1_won
+    jmp .player_2_won
+    ; No need to handle when the scores are equal,
+    ; the players can't reach the same score at the same time.
+
+.player_1_won:
+    ; Set cursor position
+    mov ah, 0x02
+    xor bh, bh                  ; Page
+    mov dh, SCREEN_H_CHARS/2+1  ; Row
+    mov dl, SCREEN_W_CHARS/2-4  ; Col
+    int 0x10
+
+    mov eax, .player_1_won_msg
+    call print_string
+    jmp .end
+
+.player_2_won:
+    ; Set cursor position
+    mov ah, 0x02
+    xor bh, bh                  ; Page
+    mov dh, SCREEN_H_CHARS/2+1  ; Row
+    mov dl, SCREEN_W_CHARS/2-4  ; Col
+    int 0x10
+
+    mov eax, .player_2_won_msg
     call print_string
 
 .end:
@@ -329,8 +361,10 @@ show_game_over_screen:
     pop es
     ret
 
-.game_over_msg1: db "GAME",0
-.game_over_msg2: db "OVER",0
+.game_over_msg1:   db "GAME",0
+.game_over_msg2:   db "OVER",0
+.player_1_won_msg: db "You won.",0
+.player_2_won_msg: db "You lose.",0
 
 
 ;***********************************************;
