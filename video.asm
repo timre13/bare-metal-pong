@@ -279,6 +279,8 @@ show_game_over_screen:
     push esi
     push bx
 
+    call play_game_over_sound
+
     xor edi, edi        ; Index
 
     mov ax, 0xa000
@@ -357,6 +359,20 @@ show_game_over_screen:
     call print_string
 
 .end:
+    call stop_playing_sound
+
+    ; Set cursor position
+    mov ah, 0x02
+    xor bh, bh                  ; Page
+    mov dh, SCREEN_H_CHARS-1    ; Row
+    mov dl, SCREEN_W_CHARS/2-12 ; Col
+    int 0x10
+
+    mov eax, .press_a_key_msg
+    call print_string
+
+    call wait_for_keypress
+
     pop bx
     pop esi
     pop edi
@@ -367,6 +383,7 @@ show_game_over_screen:
 .game_over_msg2:   db "OVER",0
 .player_1_won_msg: db "You won.",0
 .player_2_won_msg: db "You lose.",0
+.press_a_key_msg:  db "Press a key to play again",0
 
 
 ;***********************************************;

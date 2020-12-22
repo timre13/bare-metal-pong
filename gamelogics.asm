@@ -163,3 +163,21 @@ handle_keypresses:
     
 .check_end:
     ret
+
+
+;***********************************************;
+; Sets the variables to their default value.
+; Should be called before restarting the game.
+;***********************************************;
+reset_game:
+    mov word [player_1_y], SCREEN_H/2-PLAYER_HEIGHT/2
+    mov byte [player_1_score], 0
+
+    mov word [player_2_y], SCREEN_H/2-PLAYER_HEIGHT/2
+    mov byte [player_2_score], 0
+
+    mov word [ball_x], SCREEN_W/2-BALL_SIZE/2
+    mov word [ball_y], SCREEN_H/2-BALL_SIZE/2
+    mov byte [is_ball_x_speed_positive], TRUE  ; bool
+    mov byte [is_ball_y_speed_positive], TRUE  ; bool
+    ret

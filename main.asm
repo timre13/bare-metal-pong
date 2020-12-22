@@ -158,10 +158,12 @@ entry:
     jmp .main_loop              ; Repeat the main loop
 
 .game_over:
-    call play_game_over_sound
+    ; Show the game over screen, play a note and wait for keypress
     call show_game_over_screen
-    call stop_playing_sound
-    jmp halt_loop
+
+    ; The user pressed a key, so restart the game
+    call reset_game
+    jmp .main_loop
 
 ;***********************************************;
 ; Print zero-terminated string.
