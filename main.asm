@@ -153,10 +153,14 @@ entry:
 
     call clear_screen
 
+    call stop_playing_sound
+
     jmp .main_loop              ; Repeat the main loop
 
 .game_over:
+    call play_game_over_sound
     call show_game_over_screen
+    call stop_playing_sound
     jmp halt_loop
 
 ;***********************************************;
@@ -333,5 +337,6 @@ second_partition:
 %include "gamelogics.asm"
 %include "keyboard.asm"
 %include "random.asm"
+%include "sound.asm"
 
 times 512+512*SECTOR_NUM_TO_READ-($-$$) db 0 ; Padding

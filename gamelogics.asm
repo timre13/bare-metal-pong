@@ -108,6 +108,7 @@ handle_ball_bouncing_from_edges:
 
 .ball_touches_x_edge_end:
     xor byte [is_ball_x_speed_positive], 1  ; Bounce the ball
+    call play_bouncing_sound
 
 
 .test_ball_y:
@@ -119,6 +120,7 @@ handle_ball_bouncing_from_edges:
 
 .ball_touches_y_edge:
     xor byte [is_ball_y_speed_positive], 1  ; Bounce the ball
+    call play_bouncing_sound
 
 .end:
     pop si
