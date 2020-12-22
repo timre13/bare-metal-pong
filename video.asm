@@ -277,6 +277,7 @@ show_game_over_screen:
     push es
     push edi
     push esi
+    push bx
 
     xor edi, edi        ; Index
 
@@ -356,6 +357,7 @@ show_game_over_screen:
     call print_string
 
 .end:
+    pop bx
     pop esi
     pop edi
     pop es
