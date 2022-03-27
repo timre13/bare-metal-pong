@@ -1,18 +1,18 @@
 ; BSD 2-Clause License
-; 
+;
 ; Copyright (c) 2020, timre13
 ; All rights reserved.
-; 
+;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
-; 
+;
 ; 1. Redistributions of source code must retain the above copyright notice, this
 ;    list of conditions and the following disclaimer.
-; 
+;
 ; 2. Redistributions in binary form must reproduce the above copyright notice,
 ;    this list of conditions and the following disclaimer in the documentation
 ;    and/or other materials provided with the distribution.
-; 
+;
 ; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 ; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -55,7 +55,7 @@ _handle_ball_bouncing_from_edges:
     push bx
     push di
     push si
-    
+
     mov ax, [ball_x]                ; AX = ball X
     mov bx, [ball_y]                ; BX = ball Y
     mov di, [player_1_y]            ; DI = player 1 Y
@@ -143,7 +143,7 @@ handle_keypresses:
     call is_ascii_key_pressed
     cmp al, TRUE
     jne .check_s
-    
+
 .w_pressed:
     ; If the player would go out of the screen, don't move
     cmp word [player_1_y], PLAYER_1_SPEED
@@ -151,13 +151,13 @@ handle_keypresses:
 
     sub byte [player_1_y], PLAYER_1_SPEED
     ;call clear_screen
-    
+
 .check_s:
     mov al, 's'
     call is_ascii_key_pressed
     cmp al, TRUE
     jne .check_end
-    
+
 .s_pressed:
     ; If the player would go out of the screen, don't move
     cmp word [player_1_y], SCREEN_H-PLAYER_HEIGHT-PLAYER_1_SPEED
@@ -165,7 +165,7 @@ handle_keypresses:
 
     add byte [player_1_y], PLAYER_1_SPEED
     ;call clear_screen
-    
+
 .check_end:
     ret
 

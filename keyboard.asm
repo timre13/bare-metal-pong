@@ -1,18 +1,18 @@
 ; BSD 2-Clause License
-; 
+;
 ; Copyright (c) 2020, timre13
 ; All rights reserved.
-; 
+;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
-; 
+;
 ; 1. Redistributions of source code must retain the above copyright notice, this
 ;    list of conditions and the following disclaimer.
-; 
+;
 ; 2. Redistributions in binary form must reproduce the above copyright notice,
 ;    this list of conditions and the following disclaimer in the documentation
 ;    and/or other materials provided with the distribution.
-; 
+;
 ; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 ; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -67,9 +67,9 @@ is_ascii_key_pressed:
     ; If they both point to the beginning, the buffer is empty.
     mov word [es:0x1a], 0x041e
     mov word [es:0x1c], 0x041e
-    
+
     mov al, TRUE
-    
+
     jmp .end
 .not_pressed:
     xor al, al
@@ -87,7 +87,7 @@ setup_key_repeat:
     mov al, 0x05
     xor bx, bx
     int 0x16
-    
+
 
     pop bx
     ret

@@ -1,18 +1,18 @@
 ; BSD 2-Clause License
-; 
+;
 ; Copyright (c) 2020, timre13
 ; All rights reserved.
-; 
+;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
-; 
+;
 ; 1. Redistributions of source code must retain the above copyright notice, this
 ;    list of conditions and the following disclaimer.
-; 
+;
 ; 2. Redistributions in binary form must reproduce the above copyright notice,
 ;    this list of conditions and the following disclaimer in the documentation
 ;    and/or other materials provided with the distribution.
-; 
+;
 ; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 ; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -54,7 +54,7 @@ draw_palette:
     mov al, 219             ; Character
     xor bh, bh              ; Page number
     xor bl, bl              ; Color
-    
+
 .loop_:
     int 0x10
     mov cl, bl
@@ -71,7 +71,7 @@ draw_palette:
     inc bl
     cmp bl, 0
     jne .loop_
-    
+
     pop bx
     ret
 
@@ -96,7 +96,7 @@ draw_pixel:
     imul di, SCREEN_W
     add di, ax
     mov [es:di], dh
-    
+
     pop di
     pop es
     pop bx
@@ -113,7 +113,7 @@ draw_separator_line:
 
 .loop1_:
     call draw_pixel
-    
+
     add cx, 3               ; Move down
     cmp cx, SCREEN_H
     jl .loop1_
@@ -124,7 +124,7 @@ draw_separator_line:
 
 .loop2_:
     call draw_pixel
-    
+
     add cx, 3               ; Move down
     cmp cx, SCREEN_H
     jl .loop2_
@@ -140,11 +140,11 @@ draw_separator_line:
 ;   AX = x
 ;   CX = y
 ;***********************************************;
-draw_ball: 
+draw_ball:
     push bx
     push di
     push si
-    
+
     mov word [.x1], ax
     mov word [.y1], cx
     xor di, di          ; X offset
@@ -163,19 +163,19 @@ draw_ball:
     mov dl, [bx]            ; Get the "transparency" of the pixel
     imul dx, BALL_COLOR     ; Get the real pixel color
     mov dh, dl
-    
+
     call draw_pixel
-    
+
     inc di
-    
+
     cmp di, BALL_SIZE
     jge .x_loop_end
     jmp .x_loop
-    
+
 .x_loop_end:
     xor di, di
     inc si
-    
+
     cmp si, BALL_SIZE
     jl .x_loop
 
@@ -265,7 +265,7 @@ clear_screen:
 
     mov ecx, SCREEN_W*SCREEN_H/4 ; Set the count
     rep stosd           ; Do the filling
-    
+
     pop edi
     pop es
     ret
@@ -281,7 +281,7 @@ clear_screen:
 draw_player:
     push di
     push si
-    
+
     mov word [.x1], ax
     mov word [.y1], cx
     xor di, di          ; X offset
@@ -341,17 +341,17 @@ clear_player:
     add cx, si
 
     call draw_pixel
-    
+
     inc di
-    
+
     cmp di, PLAYER_WIDTH
     jge .x_loop_end
     jmp .x_loop
-    
+
 .x_loop_end:
     xor di, di
     inc si
-    
+
     cmp si, PLAYER_HEIGHT
     jl .x_loop
 
@@ -390,12 +390,12 @@ show_game_over_screen:
 
     mov eax, 100000
     call wait_for_microsecs
-    
+
 .loop_:
     mov byte [es:edi], 0xb6
 
     add edi, 11
-    
+
     cmp edi, SCREEN_W*SCREEN_H
     jl .loop_
     jmp .offset_loop
@@ -485,7 +485,7 @@ show_game_over_screen:
 ;***********************************************;
 draw_player_scores:
     push bx
-    
+
     ; Set cursor position
     mov ah, 0x02
     xor bh, bh                  ; Page

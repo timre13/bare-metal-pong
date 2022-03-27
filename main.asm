@@ -1,18 +1,18 @@
 ; BSD 2-Clause License
-; 
+;
 ; Copyright (c) 2020, timre13
 ; All rights reserved.
-; 
+;
 ; Redistribution and use in source and binary forms, with or without
 ; modification, are permitted provided that the following conditions are met:
-; 
+;
 ; 1. Redistributions of source code must retain the above copyright notice, this
 ;    list of conditions and the following disclaimer.
-; 
+;
 ; 2. Redistributions in binary form must reproduce the above copyright notice,
 ;    this list of conditions and the following disclaimer in the documentation
 ;    and/or other materials provided with the distribution.
-; 
+;
 ; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 ; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
 ; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -64,7 +64,7 @@ FALSE              equ 0
 entry:
     ; Save the boot drive number
     mov [boot_drive_num], dl
-    
+
 
     ; Set up the stack
     xor bp, bp
@@ -84,7 +84,7 @@ entry:
 
     call wait_for_keypress
 %endif
-    
+
     call clear_screen
 
     call setup_key_repeat
@@ -206,7 +206,7 @@ print_string:
     int 0x10
     inc esi                     ; Next byte
     jmp .loop_
-    
+
 .end:
     popad
     ret
@@ -253,7 +253,7 @@ read_disk:
     mov bl, al                  ; Save the # of sectors read
 
     inc di                      ; Tried one more time
-    
+
     mov eax, disk_read_err_msg1
     call print_string           ; Print the first part of the message
     mov al, bh                  ; Load the status code
@@ -288,7 +288,7 @@ read_disk:
 ;***********************************************;
 uint8_to_hex_str:
     mov cl, al
-    
+
     shr cl, 4
     mov byte [.output_str], cl
     add byte [.output_str], '0'
@@ -298,7 +298,7 @@ uint8_to_hex_str:
 
 .second_digit:
     mov cl, al
-    
+
     and cl, 0x0f
     mov byte [.output_str+1], cl
     add byte [.output_str+1], '0'
