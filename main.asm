@@ -1,6 +1,6 @@
 ; BSD 2-Clause License
 ;
-; Copyright (c) 2020, timre13
+; Copyright (c) 2020-2022, timre13
 ; All rights reserved.
 ;
 ; Redistribution and use in source and binary forms, with or without
