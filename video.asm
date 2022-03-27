@@ -200,6 +200,55 @@ draw_ball:
 
 
 ;***********************************************;
+; Fill the screen at the ball position with black.
+;
+; Arguments:
+;   AX = x
+;   CX = y
+;***********************************************;
+clear_ball:
+    push bx
+    push di
+    push si
+
+    mov word [.x1], ax
+    mov word [.y1], cx
+    xor di, di          ; X offset
+    xor si, si          ; Y offset
+    xor dh, dh          ; Color
+
+.x_loop:
+    mov ax, [.x1]
+    add ax, di
+    mov cx, [.y1]
+    add cx, si
+
+    call draw_pixel
+
+    inc di
+
+    cmp di, BALL_SIZE
+    jge .x_loop_end
+    jmp .x_loop
+
+.x_loop_end:
+    xor di, di
+    inc si
+
+    cmp si, BALL_SIZE
+    jl .x_loop
+
+.end:
+    pop si
+    pop di
+    pop bx
+    ret
+
+.x1: dw 0x00
+.y1: dw 0x00
+
+
+;***********************************************;
 ; Clear the whole screen with black.
 ;***********************************************;
 clear_screen:
@@ -245,7 +294,52 @@ draw_player:
     add cx, si
 
     mov dh, PLAYER_COLOR
-    
+
+    call draw_pixel
+
+    inc di
+
+    cmp di, PLAYER_WIDTH
+    jge .x_loop_end
+    jmp .x_loop
+
+.x_loop_end:
+    xor di, di
+    inc si
+
+    cmp si, PLAYER_HEIGHT
+    jl .x_loop
+
+.end:
+    pop si
+    pop di
+    ret
+.x1: dw 0x00
+.y1: dw 0x00
+
+;***********************************************;
+; Fill the screen with black at the player position.
+;
+; Arguments:
+;   AX = X pos
+;   CX = Y pos
+;***********************************************;
+clear_player:
+    push di
+    push si
+
+    mov word [.x1], ax
+    mov word [.y1], cx
+    xor di, di          ; X offset
+    xor si, si          ; Y offset
+    xor dh, dh
+
+.x_loop:
+    mov ax, [.x1]
+    add ax, di
+    mov cx, [.y1]
+    add cx, si
+
     call draw_pixel
     
     inc di

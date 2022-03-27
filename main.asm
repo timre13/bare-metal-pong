@@ -89,8 +89,14 @@ entry:
 
     call setup_key_repeat
 
+;------------ MAIN LOOP ---------------
+
 .main_loop:
     call draw_separator_line
+
+;------------- Move ball --------------
+
+    call move_ball
 
 ;-------------- Draw ball -------------
 
@@ -98,7 +104,7 @@ entry:
     mov cx, [ball_y]
     call draw_ball
 
-;----- Handle player 2 movement -------
+;------- Handle bot movement ----------
 
     call get_random8
     cmp ax, 150                     ; Higher value = better bot
@@ -130,15 +136,29 @@ entry:
 
     call draw_player_scores
 
+;--------------- DELAY ----------------
+
+    mov eax, FRAME_DELAY_MS
+    call wait_for_microsecs                 ; Wait some time
+
+;---------- Clear screen --------------
+
+    mov ax, [ball_x]
+    mov cx, [ball_y]
+    call clear_ball
+
+    mov ax, PLAYER_1_X
+    mov cx, [player_1_y]
+    call clear_player
+
+    mov ax, PLAYER_2_X
+    mov cx, [player_2_y]
+    call clear_player
+
 ;----------- Handle keypresses --------
     call handle_keypresses
 
-
-;------ Ball bouncing from edges ------
-    call handle_ball_bouncing_from_edges
-
-;------------- Move ball --------------
-    call move_ball
+;-------- Handle winning/losing -------
 
     cmp byte [player_1_score], 10
     jl .not_game_over1
@@ -148,14 +168,12 @@ entry:
     jl .not_game_over2
     jmp .game_over
 .not_game_over2:
-    mov eax, FRAME_DELAY_MS
-    call wait_for_microsecs                 ; Wait some time
-
-    call clear_screen
 
     call stop_playing_sound
 
     jmp .main_loop              ; Repeat the main loop
+
+;----------- Game over ----------------
 
 .game_over:
     ; Show the game over screen, play a note and wait for keypress
@@ -163,7 +181,9 @@ entry:
 
     ; The user pressed a key, so restart the game
     call reset_game
+    call clear_screen
     jmp .main_loop
+
 
 ;***********************************************;
 ; Print zero-terminated string.
@@ -172,8 +192,7 @@ entry:
 ;   EAX = Source address
 ;***********************************************;
 print_string:
-    push bx
-    push esi
+    pushad
 
     mov esi, eax
     mov ah, 0x0e
@@ -189,8 +208,7 @@ print_string:
     jmp .loop_
     
 .end:
-    pop esi
-    pop bx
+    popad
     ret
 
 
@@ -199,9 +217,7 @@ print_string:
 ;***********************************************;
 ; FIXME: This function fails with error code 0x02 on real hardware. Why?
 read_disk:
-    push bx
-    push di
-    push es
+    pushad
 
     xor di, di                  ; Number of disk read tries
 
@@ -226,7 +242,7 @@ read_disk:
     mov cl, 0x02                ; Sector
     xor dx, dx
     mov es, dx                  ; Destination segment
-    mov dh, 0x00                ; Head
+    xor dh, dh                  ; Head
     mov dl, [boot_drive_num]    ; Drive number
     mov bx, second_partition    ; Destination address
     int 0x13                    ; Do the read
@@ -260,9 +276,7 @@ read_disk:
     mov ax, ok_msg
     call print_string
 
-    pop es
-    pop di
-    pop bx
+    popad
     ret
 
 
@@ -328,6 +342,8 @@ is_ball_x_speed_positive: db TRUE  ; bool
 is_ball_y_speed_positive: db TRUE  ; bool
 
 
+;%assign remainingBytes 510-($-$$)
+;%warning Remaining space: remainingBytes bytes
 times 510-($-$$) db 0   ; Padding
 dw 0xaa55               ; Magic number
 

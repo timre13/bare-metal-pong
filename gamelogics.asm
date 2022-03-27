@@ -24,9 +24,14 @@
 ; OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-;***********************************************;
-;***********************************************;
 move_ball:
+    call _handle_ball_bouncing_from_edges
+    call _move_ball_real
+    ret
+
+;***********************************************;
+;***********************************************;
+_move_ball_real:
     cmp byte [is_ball_x_speed_positive], FALSE ; If the ball X speed is negative
     je .ball_x_speed_is_negative
     add word [ball_x], BALL_SPEED           ; If it is positive
@@ -46,7 +51,7 @@ move_ball:
 
 ;***********************************************;
 ;***********************************************;
-handle_ball_bouncing_from_edges:
+_handle_ball_bouncing_from_edges:
     push bx
     push di
     push si
